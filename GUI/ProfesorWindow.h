@@ -6,11 +6,11 @@
 #include <QComboBox>
 #include <QFormLayout>
 #include <QTableView>
-
 #include "ModelTabelMaterii.h"
+#include "../Observer/Observer.h"
 
 
-class ProfesorWindow final: public UserWindow {
+class ProfesorWindow final: public UserWindow, public Observer {
 private:
     QVBoxLayout* lyMain;
     QHBoxLayout* lySus;
@@ -29,7 +29,7 @@ private:
 
     void initializareGUI();
     void conectareSemnale();
-    void reincarcareTabel() const;
+    void updateObserver() override;
 
 public:
     ProfesorWindow(QWidget* mainWindow, Service& service, Profesor* student);

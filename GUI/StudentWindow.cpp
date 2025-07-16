@@ -44,6 +44,10 @@ void StudentWindow::conectareSemnale() {
     });
 }
 
+void StudentWindow::updateObserver() {
+    model->setNote(service.getNote(*user));
+}
+
 StudentWindow::StudentWindow(QWidget* mainWindow, Service& service, Student* student):
     UserWindow(mainWindow, service, student) {
     initializareGUI();

@@ -54,12 +54,24 @@ const std::vector<Nota>& Service::getAllNote() const {
     return repository.getNote();
 }
 
+std::vector<Nota> Service::getNoteMaterie(const std::string &denumire_materie) const {
+    std::vector<Nota> note_materie;
+    std::vector<Nota> note = repository.getNote();
+    std::ranges::copy_if(note, std::back_inserter(note_materie), [denumire_materie](auto& nota) {
+        return denumire_materie == nota.getMaterie().getDenumire();
+    });
+    return note_materie;
+}
+
 void Service::modificaStudent(int id, const std::string& nume, const std::string& email, const std::string& password, const int grupa) const {
     const auto it = std::ranges::find_if(repository.getStudenti(), [id](auto& student) {
         return id == student.getId();
     });
     if(it == repository.getStudenti().end()) throw RepositoryError("Nu exista student cu acest id!\n");
     repository.modificaStudent(it, nume, email, password, grupa);
+    for(auto* obs: observeri) {
+        obs->updateObserver();
+    }
 }
 
 void Service::modificaProfesor(int id, const std::string &nume, const std::string &email, const std::string &password,
@@ -69,6 +81,9 @@ void Service::modificaProfesor(int id, const std::string &nume, const std::strin
     });
     if(it == repository.getProfesori().end()) throw RepositoryError("Nu exista profesor cu acest id!\n");
     repository.modificaProfesor(it, nume, email, password, departament);
+    for(auto* obs: observeri) {
+        obs->updateObserver();
+    }
 }
 
 void Service::modificaMaterie(int id, const std::string &denumire, int id_profesor) const {
@@ -81,8 +96,10 @@ void Service::modificaMaterie(int id, const std::string &denumire, int id_profes
         return id_profesor == profesor.getId();
     });
     if(it_p == repository.getProfesori().end()) throw RepositoryError("Nu exista profesor cu acest id!\n");
-
     repository.modificaMaterie(it, denumire, *it_p);
+    for(auto* obs: observeri) {
+        obs->updateObserver();
+    }
 }
 
 void Service::modificaNota(const std::string& nume_student, const std::string& materie, const int valoare_nota_noua) const {
@@ -105,6 +122,9 @@ void Service::modificaNota(const std::string& nume_student, const std::string& m
     if(it_n == repository.getNote().end()) throw RepositoryError("Nu exista nota pentru acest student la aceasta materie!\n");
 
     repository.modificaNota(it_n, valoare_nota_noua);
+    for(auto* obs: observeri) {
+        obs->updateObserver();
+    }
 }
 
 
@@ -114,6 +134,9 @@ void Service::modificaNota(const int id_student, const int id_materie, const int
     });
     if(it_n == repository.getNote().end()) throw RepositoryError("Nu exista nota!\n");
     repository.modificaNota(it_n, valoare_nota_noua);
+    for(auto* obs: observeri) {
+        obs->updateObserver();
+    }
 }
 
 void Service::adaugaStudent(int id, const std::string& nume, const std::string& email, const std::string& parola,
@@ -125,6 +148,9 @@ void Service::adaugaStudent(int id, const std::string& nume, const std::string& 
     });
     if(it != repository.getUsers().end()) throw RepositoryError("Id existent!\n");
     repository.addStudent(student);
+    for(auto* obs: observeri) {
+        obs->updateObserver();
+    }
 }
 
 void Service::adaugaProfesor(int id, const std::string& nume, const std::string& email, const std::string& parola,
@@ -136,6 +162,9 @@ void Service::adaugaProfesor(int id, const std::string& nume, const std::string&
     });
     if(it != repository.getUsers().end()) throw RepositoryError("Id existent!\n");
     repository.addProfesor(profesor);
+    for(auto* obs: observeri) {
+        obs->updateObserver();
+    }
 }
 
 void Service::adaugaMaterie(int id, const std::string& denumire, const std::string& nume_profesor) const {
@@ -149,6 +178,9 @@ void Service::adaugaMaterie(int id, const std::string& denumire, const std::stri
     if(it_p == repository.getProfesori().end()) throw RepositoryError("Nu exista profesoru cu numele introdus!\n");
     const Materie materie(id, denumire, &*it_p);
     repository.addMaterie(materie);
+    for(auto* obs: observeri) {
+        obs->updateObserver();
+    }
 }
 
 void Service::adaugaNota(int id, const int valoare, const std::string& nume_student, const std::string& denumire_materie) const {
@@ -167,4 +199,11 @@ void Service::adaugaNota(int id, const int valoare, const std::string& nume_stud
     if(it_m == repository.getMaterii().end()) throw RepositoryError("Nu exista materie cu denumirea introdusa!\n");
     const Nota nota(id, valoare, &*it_s, &*it_m);
     repository.addNota(nota);
+    for(auto* obs: observeri) {
+        obs->updateObserver();
+    }
+}
+
+void Service::addObserver(Observer *obs) {
+    observeri.push_back(obs);
 }

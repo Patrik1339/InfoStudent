@@ -7,10 +7,11 @@
 #include <QVBoxLayout>
 #include <QWidget>
 #include "ModelGeneral.h"
+#include "../Observer/Observer.h"
 #include "../Service/Service.h"
 
 
-class AdminWindow final: public QWidget {
+class AdminWindow final: public QWidget, public Observer {
 private:
     Service& service;
 
@@ -47,6 +48,7 @@ private:
     void conectareSemnale();
     void reincarcareTabela() const;
     void createField(QLabel* label, QLineEdit* camp, int id);
+    void updateObserver() override;
 
 public:
     explicit AdminWindow(Service& service);

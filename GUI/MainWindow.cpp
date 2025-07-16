@@ -62,16 +62,27 @@ void MainWindow::conectareSemnale() {
             if(email == "admin" && parola == "admin") {
                 const auto admin_window = new AdminWindow(service);
                 admin_window->show();
+                service.addObserver(admin_window);
                 return;
             }
+
             User* user = service.login(email, parola);
-            this->hide();
             campEmail->clear();
             campParola->clear();
-            UserWindow* user_window;
-            if(typeid(*user) == typeid(Student)) user_window = new StudentWindow(this, service, dynamic_cast<Student*>(user));
-            else user_window = new ProfesorWindow(this, service, dynamic_cast<Profesor*>(user));
-            user_window->show();
+
+            if(const auto student = dynamic_cast<Student*>(user)) {
+                const auto student_window = new StudentWindow(this, service, student);
+                student_window->show();
+                service.addObserver(student_window);
+            }
+            else if(const auto profesor = dynamic_cast<Profesor*>(user)) {
+                const auto profesor_window = new ProfesorWindow(this, service, profesor);
+                profesor_window->show();
+                service.addObserver(profesor_window);
+            }
+            else {
+                QMessageBox::warning(this, "Eroare", "Tip de utilizator invalid!\n");
+            }
         } catch(const RepositoryError& re) {
             QMessageBox::warning(this, "Eroare", re.what());
         }

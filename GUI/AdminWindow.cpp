@@ -287,6 +287,13 @@ void AdminWindow::createField(QLabel* label, QLineEdit* camp, int id) {
     }
 }
 
+void AdminWindow::updateObserver() {
+    model->setStudenti(service.getAllStudenti());
+    model->setProfesori(service.getAllProfesori());
+    model->setMaterii(service.getAllMaterii());
+    model->setNote(service.getAllNote());
+}
+
 AdminWindow::AdminWindow(Service &service) : service(service) {
     initializareGUI();
     conectareSemnale();

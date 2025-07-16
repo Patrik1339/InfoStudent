@@ -28,8 +28,8 @@ void Repository::incarcaStudenti() {
 
         studenti.emplace_back(id, reinterpret_cast<const char*>(nume), reinterpret_cast<const char*>(email),
             reinterpret_cast<const char*>(parola), grupa);
-        users.emplace_back(new User(id, reinterpret_cast<const char*>(nume), reinterpret_cast<const char*>(email),
-            reinterpret_cast<const char*>(parola)));
+        users.emplace_back(new Student(id, reinterpret_cast<const char*>(nume), reinterpret_cast<const char*>(email),
+            reinterpret_cast<const char*>(parola), grupa));
     }
     sqlite3_finalize(stmt);
     sqlite3_close(db);
@@ -52,8 +52,8 @@ void Repository::incarcaProfesori() {
 
         profesori.emplace_back(id, reinterpret_cast<const char*>(nume), reinterpret_cast<const char*>(email),
             reinterpret_cast<const char*>(parola), reinterpret_cast<const char*>(departament));
-        users.emplace_back(new User(id, reinterpret_cast<const char*>(nume), reinterpret_cast<const char*>(email),
-            reinterpret_cast<const char*>(parola)));
+        users.emplace_back(new Profesor(id, reinterpret_cast<const char*>(nume), reinterpret_cast<const char*>(email),
+            reinterpret_cast<const char*>(parola), reinterpret_cast<const char*>(departament)));
     }
     sqlite3_finalize(stmt);
     sqlite3_close(db);

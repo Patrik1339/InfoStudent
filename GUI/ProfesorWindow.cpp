@@ -72,7 +72,7 @@ void ProfesorWindow::conectareSemnale() {
     });
 
     connect(comboMaterii, &QComboBox::currentIndexChanged, [this]() {
-        reincarcareTabel();
+        updateObserver();
     });
 
     connect(tabelaNoteMaterie->selectionModel(), &QItemSelectionModel::selectionChanged, [this]() {
@@ -105,25 +105,20 @@ void ProfesorWindow::conectareSemnale() {
         const std::string materie = materie_Q.toStdString();
         try {
             service.modificaNota(nume_student, materie, nota);
-            reincarcareTabel();
+            update();
         } catch(const RepositoryError& re) {
             QMessageBox::warning(this, "Eroare", re.what());
         }
     });
 }
 
-void ProfesorWindow::reincarcareTabel() const {
+void ProfesorWindow::updateObserver() {
     const std::string denumire_materie = comboMaterii->currentText().toStdString();
-    std::vector<Nota> note_materie;
-    const std::vector<Nota> note = service.getAllNote();
-    for(auto nota: note) {
-        if(nota.getMaterie().getDenumire() == denumire_materie) note_materie.push_back(nota);
-    }
-    model->setNote(note_materie);
+    model->setNote(service.getNoteMaterie(denumire_materie));
 }
 
-ProfesorWindow::ProfesorWindow(QWidget* mainWindow, Service& service, Profesor* student):
-    UserWindow(mainWindow, service, student) {
+ProfesorWindow::ProfesorWindow(QWidget* mainWindow, Service& service, Profesor* profesor):
+    UserWindow(mainWindow, service, profesor) {
     initializareGUI();
     conectareSemnale();
 }
