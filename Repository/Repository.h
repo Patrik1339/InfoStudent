@@ -16,7 +16,15 @@ private:
     std::vector<Nota> note;
 
     void loadDatabase();
+    void incarcaStudenti();
+    void incarcaProfesori();
+    void incarcaMaterii();
+    void incarcaNote();
     void updateDatabase() const;
+    void updateStudenti() const;
+    void updateProfesori() const;
+    void updateMaterii() const;
+    void updateNote() const;
 
 public:
     Repository();
@@ -33,4 +41,8 @@ public:
         const std::string& email, const std::string& password, const std::string& departament) const;
     void modificaMaterie(const std::vector<Materie>::iterator& it, const std::string& denumire, Profesor& profesor) const;
     void modificaNota(const std::vector<Nota>::iterator& it, int valoare) const;
+    void addStudent(Student& student);
+    void addProfesor(Profesor& profesor);
+    void addMaterie(const Materie& materie);
+    void addNota(const Nota& nota);
 };

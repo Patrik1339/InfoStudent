@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
 #include <vector>
-
 #include "Profesor.h"
 #include "Student.h"
 #include "User.h"

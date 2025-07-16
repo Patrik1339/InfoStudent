@@ -21,9 +21,7 @@ private:
     QTableView* tabela;
     ModelTabelGeneral* model;
     QFormLayout* lyFormular;
-    QLineEdit* campIdStudent;
-    QLineEdit* campIdProfesor;
-    QLineEdit* campIdMaterie;
+    QLineEdit* campId;
     QLineEdit* campNume;
     QLineEdit* campEmail;
     QLineEdit* campParola;
@@ -31,9 +29,7 @@ private:
     QLineEdit* campGrupa;
     QLineEdit* campDepartament;
     QLineEdit* campDenumireMaterie;
-    QLabel* lblCampIdStudent;
-    QLabel* lblCampIdProfesor;
-    QLabel* lblCampIdMaterie;
+    QLabel* lblCampId;
     QLabel* lblCampNume;
     QLabel* lblCampEmail;
     QLabel* lblCampParola;

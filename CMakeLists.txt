@@ -44,6 +44,8 @@ add_executable(InfoStudent main.cpp
         GUI/AdminWindow.cpp
         GUI/AdminWindow.h
         GUI/ModelGeneral.h
+        Validator/Validator.h
+        Erori/ValidationError.h
 )
 target_link_libraries(InfoStudent
         Qt::Core

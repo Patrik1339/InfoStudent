@@ -3,6 +3,7 @@
 #include <fstream>
 #include <ranges>
 #include "../Erori/RepositoryError.h"
+#include "../Validator/Validator.h"
 
 
 Service::Service(Repository& repository): repository(repository) {}
@@ -113,4 +114,57 @@ void Service::modificaNota(const int id_student, const int id_materie, const int
     });
     if(it_n == repository.getNote().end()) throw RepositoryError("Nu exista nota!\n");
     repository.modificaNota(it_n, valoare_nota_noua);
+}
+
+void Service::adaugaStudent(int id, const std::string& nume, const std::string& email, const std::string& parola,
+    const int grupa) const {
+    Student student(id, nume, email, parola, grupa);
+    Validator::ValideazaUser(student);
+    const auto it = std::ranges::find_if(repository.getUsers(), [id](auto* user) {
+        return id == user->getId();
+    });
+    if(it != repository.getUsers().end()) throw RepositoryError("Id existent!\n");
+    repository.addStudent(student);
+}
+
+void Service::adaugaProfesor(int id, const std::string& nume, const std::string& email, const std::string& parola,
+    const std::string& departament) const {
+    Profesor profesor(id, nume, email, parola, departament);
+    Validator::ValideazaUser(profesor);
+    const auto it = std::ranges::find_if(repository.getUsers(), [id](auto* user) {
+        return id == user->getId();
+    });
+    if(it != repository.getUsers().end()) throw RepositoryError("Id existent!\n");
+    repository.addProfesor(profesor);
+}
+
+void Service::adaugaMaterie(int id, const std::string& denumire, const std::string& nume_profesor) const {
+    const auto it = std::ranges::find_if(repository.getMaterii(), [id](auto& materie) {
+        return id == materie.getId();
+    });
+    if(it != repository.getMaterii().end()) throw RepositoryError("Id existent!\n");
+    const auto it_p = std::ranges::find_if(repository.getProfesori(), [nume_profesor](auto& profesor) {
+        return nume_profesor == profesor.getNume();
+    });
+    if(it_p == repository.getProfesori().end()) throw RepositoryError("Nu exista profesoru cu numele introdus!\n");
+    const Materie materie(id, denumire, &*it_p);
+    repository.addMaterie(materie);
+}
+
+void Service::adaugaNota(int id, const int valoare, const std::string& nume_student, const std::string& denumire_materie) const {
+    if(valoare < 1 || valoare > 10) throw ValidationError("Valoare nota invalida!\n");
+    const auto it = std::ranges::find_if(repository.getNote(), [id](auto& nota) {
+        return id == nota.getId();
+    });
+    if(it != repository.getNote().end()) throw RepositoryError("Id existent!\n");
+    const auto it_s = std::ranges::find_if(repository.getStudenti(), [nume_student](auto& student) {
+        return nume_student == student.getNume();
+    });
+    if(it_s == repository.getStudenti().end()) throw RepositoryError("Nu exista student cu numele introdus!\n");
+    const auto it_m = std::ranges::find_if(repository.getMaterii(), [denumire_materie](auto& materie) {
+        return denumire_materie == materie.getDenumire();
+    });
+    if(it_m == repository.getMaterii().end()) throw RepositoryError("Nu exista materie cu denumirea introdusa!\n");
+    const Nota nota(id, valoare, &*it_s, &*it_m);
+    repository.addNota(nota);
 }

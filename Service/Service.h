@@ -24,4 +24,8 @@ public:
     void modificaMaterie(int id, const std::string& denumire, int id_profesor) const;
     void modificaNota(const std::string& nume_student, const std::string& materie, int valoare_nota_noua) const;
     void modificaNota(int id_student, int id_materie, int valoare_nota_noua) const;
+    void adaugaStudent(int id, const std::string& nume, const std::string& email, const std::string& parola, int grupa) const;
+    void adaugaProfesor(int id, const std::string& nume, const std::string& email, const std::string& parola, const std::string& departament) const;
+    void adaugaMaterie(int id, const std::string& denumire, const std::string& nume_profesor) const;
+    void adaugaNota(int id, int valoare, const std::string& nume_student, const std::string& denumire_materie) const;
 };

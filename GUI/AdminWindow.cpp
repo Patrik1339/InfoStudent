@@ -4,6 +4,7 @@
 #include <QHeaderView>
 #include <ranges>
 #include "../Erori/RepositoryError.h"
+#include "../Erori/ValidationError.h"
 
 
 void AdminWindow::initializareGUI() {
@@ -26,17 +27,9 @@ void AdminWindow::initializareGUI() {
     lySecundar->addWidget(tabela);
 
     lyFormular = new QFormLayout;
-    campIdStudent = new QLineEdit;
-    lblCampIdStudent = new QLabel("Id student");
-    createField(lblCampIdStudent, campIdStudent, 0);
-
-    campIdProfesor = new QLineEdit;
-    lblCampIdProfesor = new QLabel("Id profesor");
-    createField(lblCampIdProfesor, campIdProfesor, 7);
-
-    campIdMaterie = new QLineEdit;
-    lblCampIdMaterie = new QLabel("Id materie");
-    createField(lblCampIdMaterie, campIdMaterie, 2);
+    campId = new QLineEdit;
+    lblCampId = new QLabel("Id");
+    createField(lblCampId, campId, -1);
 
     campNume = new QLineEdit;
     lblCampNume = new QLabel("Nume");
@@ -72,7 +65,9 @@ void AdminWindow::initializareGUI() {
 
     lyVertical->addLayout(lyFormular);
 
+    btnAdauga = new QPushButton("Adauga");
     btnModifica = new QPushButton("Modifica");
+    lyVertical->addWidget(btnAdauga);
     lyVertical->addWidget(btnModifica);
 
     lySecundar->addLayout(lyVertical);
@@ -85,31 +80,95 @@ void AdminWindow::initializareGUI() {
 }
 
 void AdminWindow::conectareSemnale() {
+    connect(btnAdauga, &QPushButton::clicked, [this]() {
+        const std::string tip = comboTabela->currentText().toStdString();
+        switch(tipuri.at(tip)) {
+        case 0: {
+            const auto id = campId->text().toInt();
+            const auto nume = campNume->text().toStdString();
+            const auto email = campEmail->text().toStdString();
+            const auto parola = campParola->text().toStdString();
+            const auto grupa = campGrupa->text().toInt();
+            try {
+                service.adaugaStudent(id, nume, email, parola, grupa);
+                model->setStudenti(service.getAllStudenti());
+            } catch(const RepositoryError& re) {
+                QMessageBox::warning(this, "Eroare", re.what());
+            } catch(const ValidationError& ve) {
+                QMessageBox::warning(this, "Eroare", ve.what());
+            }
+            break;
+        }
+        case 1: {
+            const auto id = campId->text().toInt();
+            const auto nume = campNume->text().toStdString();
+            const auto email = campEmail->text().toStdString();
+            const auto parola = campParola->text().toStdString();
+            const auto departament = campDepartament->text().toStdString();
+            try {
+                service.adaugaProfesor(id, nume, email, parola, departament);
+                model->setProfesori(service.getAllProfesori());
+            } catch(const RepositoryError& re) {
+                QMessageBox::warning(this, "Eroare", re.what());
+            } catch(const ValidationError& ve) {
+                QMessageBox::warning(this, "Eroare", ve.what());
+            }
+            break;
+        }
+        case 2: {
+            const auto id = campId->text().toInt();
+            const auto denumire = campDenumireMaterie->text().toStdString();
+            const auto nume_profesor = campNume->text().toStdString();
+            try {
+                service.adaugaMaterie(id, denumire, nume_profesor);
+                model->setMaterii(service.getAllMaterii());
+            } catch(const RepositoryError& re) {
+                QMessageBox::warning(this, "Eroare", re.what());
+            }
+            break;
+        }
+        case 3: {
+            const auto id = campId->text().toInt();
+            const auto nume_student = campNume->text().toStdString();
+            const auto valoare_nota = campNota->text().toInt();
+            const auto denumire_materie = campDenumireMaterie->text().toStdString();
+            try {
+                service.adaugaNota(id, valoare_nota, nume_student, denumire_materie);
+                model->setNote(service.getAllNote());
+            } catch(const RepositoryError& re) {
+                QMessageBox::warning(this, "Eroare", re.what());
+            }
+            break;
+        }
+            default: break;
+        }
+    });
+
     connect(comboTabela, &QComboBox::currentTextChanged, [this](const QString& tip) {
         model->setTip(tip.toStdString());
         for(const auto widget: widgets|std::views::keys) widget->hide();
         switch(tipuri.at(tip.toStdString())) {
             case 0: {
                 for(auto [widget, id]: widgets) {
-                    if(id == 0 || id == 4 || id == 5) widget->show();
+                    if(id == 0 || id == 4 || id == 5 || id == -1) widget->show();
                 }
                 break;
             }
             case 1: {
                 for(auto [widget, id]: widgets) {
-                    if(id == 1 || id == 4 || id == 5) widget->show();
+                    if(id == 1 || id == 4 || id == 5 || id == -1) widget->show();
                 }
                 break;
             }
             case 2: {
                 for(auto [widget, id]: widgets) {
-                    if(id == 2 || id == 6 || id == 7) widget->show();
+                    if(id == 2 || id == 6 || id == 5 || id == -1) widget->show();
                 }
                 break;
             }
             case 3: {
                 for(auto [widget, id]: widgets) {
-                    if(id == 3 || id == 5 || id == 6) widget->show();
+                    if(id == 3 || id == 5 || id == 6 || id == -1) widget->show();
                 }
                 break;
             }
@@ -120,8 +179,8 @@ void AdminWindow::conectareSemnale() {
     connect(btnModifica, &QPushButton::clicked, [this]() {
         const auto tip = comboTabela->currentText().toStdString();
 
-        const int id = campIdStudent->text().toInt();
-        const int id_materie = campIdMaterie->text().toInt();
+        const int id = campId->text().toInt();
+        const int id_materie = campId->text().toInt();
         const std::string nume = campNume->text().toStdString();
         const std::string email = campEmail->text().toStdString();
         const std::string parola = campParola->text().toStdString();
@@ -166,7 +225,7 @@ void AdminWindow::conectareSemnale() {
                 const QModelIndex idxEmail = model->index(row, 2);
                 const QModelIndex idxParola = model->index(row, 3);
                 const QModelIndex idxGrupa = model->index(row, 4);
-                campIdStudent->setText(model->data(idxId, Qt::DisplayRole).toString());
+                campId->setText(model->data(idxId, Qt::DisplayRole).toString());
                 campNume->setText(model->data(idxNume, Qt::DisplayRole).toString());
                 campEmail->setText(model->data(idxEmail, Qt::DisplayRole).toString());
                 campParola->setText(model->data(idxParola, Qt::DisplayRole).toString());
@@ -179,7 +238,7 @@ void AdminWindow::conectareSemnale() {
                 const QModelIndex idxEmail = model->index(row, 2);
                 const QModelIndex idxParola = model->index(row, 3);
                 const QModelIndex idxDepartament = model->index(row, 4);
-                campIdProfesor->setText(model->data(idxId, Qt::DisplayRole).toString());
+                campId->setText(model->data(idxId, Qt::DisplayRole).toString());
                 campNume->setText(model->data(idxNume, Qt::DisplayRole).toString());
                 campEmail->setText(model->data(idxEmail, Qt::DisplayRole).toString());
                 campParola->setText(model->data(idxParola, Qt::DisplayRole).toString());
@@ -190,15 +249,15 @@ void AdminWindow::conectareSemnale() {
                 const QModelIndex idxIdMaterie = model->index(row, 0);
                 const QModelIndex idxDenumire = model->index(row, 1);
                 const QModelIndex idxNumeProfesor = model->index(row, 2);
-                campIdMaterie->setText(model->data(idxIdMaterie, Qt::DisplayRole).toString());
+                campId->setText(model->data(idxIdMaterie, Qt::DisplayRole).toString());
                 campDenumireMaterie->setText(model->data(idxDenumire, Qt::DisplayRole).toString());
                 campNume->setText(model->data(idxNumeProfesor, Qt::DisplayRole).toString());
                 break;
             }
             case 3: {
-                const QModelIndex idxNume = model->index(row, 0);
-                const QModelIndex idxDenumire = model->index(row, 1);
-                const QModelIndex idxNota = model->index(row, 2);
+                const QModelIndex idxNume = model->index(row, 1);
+                const QModelIndex idxDenumire = model->index(row, 2);
+                const QModelIndex idxNota = model->index(row, 3);
                 campNume->setText(model->data(idxNume, Qt::DisplayRole).toString());
                 campDenumireMaterie->setText(model->data(idxDenumire, Qt::DisplayRole).toString());
                 campNota->setText(model->data(idxNota, Qt::DisplayRole).toString());
@@ -222,8 +281,10 @@ void AdminWindow::createField(QLabel* label, QLineEdit* camp, int id) {
     lyFormular->addRow(label, camp);
     widgets.insert({camp, id});
     widgets.insert({label, id});
-    camp->hide();
-    label->hide();
+    if(id != -1) {
+        camp->hide();
+        label->hide();
+    }
 }
 
 AdminWindow::AdminWindow(Service &service) : service(service) {
