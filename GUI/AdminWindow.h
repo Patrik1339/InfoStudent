@@ -44,13 +44,13 @@ private:
     QPushButton* btnAdauga;
     QPushButton* btnModifica;
     QPushButton* btnSterge;
-    std::vector<QLineEdit*> campuri;
-    std::vector<QLabel*> labeluri;
+    std::unordered_map<QWidget*, int> widgets;
+    std::unordered_map<std::string, int> tipuri = {{"studenti", 0}, {"profesori", 1}, {"materii", 2}, {"note", 3}};
 
     void initializareGUI();
     void conectareSemnale();
     void reincarcareTabela() const;
-    void ascundeCampuri() const;
+    void createField(QLabel* label, QLineEdit* camp, int id);
 
 public:
     explicit AdminWindow(Service& service);

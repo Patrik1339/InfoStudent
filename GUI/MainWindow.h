@@ -5,7 +5,6 @@
 #include <QFormLayout>
 #include <QLineEdit>
 #include <QPushButton>
-
 #include "../Service/Service.h"
 
 

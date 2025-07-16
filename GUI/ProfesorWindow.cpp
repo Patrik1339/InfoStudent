@@ -60,6 +60,7 @@ void ProfesorWindow::initializareGUI() {
     this->setLayout(lyMain);
     this->resize(600, 300);
     this->setStyleSheet("background-color: #A2B2C3; color: black;");
+    this->setWindowTitle("Profesor");
 }
 
 
@@ -69,9 +70,11 @@ void ProfesorWindow::conectareSemnale() {
         this->close();
         this->deleteLater();
     });
+
     connect(comboMaterii, &QComboBox::currentIndexChanged, [this]() {
         reincarcareTabel();
     });
+
     connect(tabelaNoteMaterie->selectionModel(), &QItemSelectionModel::selectionChanged, [this]() {
         const auto idx = tabelaNoteMaterie->selectionModel()->selectedIndexes();
         const int row = idx.at(0).row();
@@ -79,11 +82,12 @@ void ProfesorWindow::conectareSemnale() {
         const QModelIndex idxNume = model->index(row, 0);
         const QModelIndex idxNota = model->index(row, 1);
 
-        QString nume_student = idxNume.data(Qt::DisplayRole).toString();
+        const QString nume_student = idxNume.data(Qt::DisplayRole).toString();
         campNumeStudent->setText(nume_student);
-        QString nota = idxNota.data(Qt::DisplayRole).toString();
+        const QString nota = idxNota.data(Qt::DisplayRole).toString();
         campNota->setText(nota);
     });
+
     connect(btnModificareNota, &QPushButton::clicked, [this]() {
         const auto nota_Q = campNota->text();
         const int nota = nota_Q.toInt();

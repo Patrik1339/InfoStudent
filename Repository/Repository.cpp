@@ -246,18 +246,19 @@ std::vector<Profesor>& Repository::getProfesori() {
 }
 
 void Repository::modificaStudent(const std::vector<Student>::iterator& it, const std::string& nume,
-    const std::string& email, const std::string& password, int grupa) {
+    const std::string& email, const std::string& password, const int grupa) const {
     it->setAtributes(nume, email, password, grupa);
     updateDatabase();
 }
 
 void Repository::modificaProfesor(const std::vector<Profesor>::iterator &it, const std::string &nume,
-    const std::string &email, const std::string &password, const std::string &departament) {
+    const std::string &email, const std::string &password, const std::string &departament) const {
     it->setAtributes(nume, email, password, departament);
     updateDatabase();
 }
 
-void Repository::modificaMaterie(const std::vector<Materie>::iterator &it, const std::string &denumire, Profesor& profesor) {
+void Repository::modificaMaterie(const std::vector<Materie>::iterator &it, const std::string& denumire,
+    Profesor& profesor) const {
     it->setAtributes(denumire, &profesor);
     updateDatabase();
 }

@@ -33,8 +33,8 @@ public:
 
     int columnCount(const QModelIndex&) const override {
         switch(tipuri.at(tip)) {
-            case 0: return 4;
-            case 1: return 4;
+            case 0: return 5;
+            case 1: return 5;
             case 2: return 3;
             case 3: return 4;
             default: return 0;
@@ -52,7 +52,8 @@ public:
                 switch(section) {
                 case 1: return QString::fromStdString("Nume student");
                 case 2: return QString::fromStdString("Email");
-                case 3: return QString::fromStdString("Grupa");
+                case 3: return QString::fromStdString("Parola");
+                case 4: return QString::fromStdString("Grupa");
                 default: return QVariant();
                 }
             }
@@ -60,7 +61,8 @@ public:
                 switch(section) {
                     case 1: return QString::fromStdString("Nume profesor");
                     case 2: return QString::fromStdString("Email");
-                    case 3: return QString::fromStdString("Departament");
+                    case 3: return QString::fromStdString("Parola");
+                    case 4: return QString::fromStdString("Departament");
                     default: return QVariant();
                 }
             }
@@ -93,7 +95,8 @@ public:
                     case 0: return QString::number(s.getId());
                     case 1: return QString::fromStdString(s.getNume());
                     case 2: return QString::fromStdString(s.getEmail());
-                    case 3: return s.getGrupa();
+                    case 3: return QString::fromStdString(s.getPassword());
+                    case 4: return s.getGrupa();
                     default: return QVariant();
                 }
             }
@@ -103,7 +106,8 @@ public:
                     case 0: return QString::number(p.getId());
                     case 1: return QString::fromStdString(p.getNume());
                     case 2: return QString::fromStdString(p.getEmail());
-                    case 3: return QString::fromStdString(p.getDepartament());
+                    case 3: return QString::fromStdString(p.getPassword());
+                    case 4: return QString::fromStdString(p.getDepartament());
                     default: return QVariant();
                 }
             }

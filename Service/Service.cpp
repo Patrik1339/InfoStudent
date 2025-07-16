@@ -7,7 +7,6 @@
 
 Service::Service(Repository& repository): repository(repository) {}
 
-
 User* Service::login(const std::string& email, const std::string& password) const {
     const auto it = std::ranges::find_if(repository.getUsers(), [email, password](auto* user_ptr) {
         return user_ptr->getEmail() == email && user_ptr->getPassword() == password;
@@ -38,19 +37,19 @@ std::vector<Materie> Service::getMaterii(const User &user) const {
     return materii_profesor;
 }
 
-std::vector<Student> Service::getAllStudenti() const {
+const std::vector<Student>& Service::getAllStudenti() const {
     return repository.getStudenti();
 }
 
-std::vector<Profesor> Service::getAllProfesori() const {
+const std::vector<Profesor>& Service::getAllProfesori() const {
     return repository.getProfesori();
 }
 
-std::vector<Materie> Service::getAllMaterii() const {
+const std::vector<Materie>& Service::getAllMaterii() const {
     return repository.getMaterii();
 }
 
-std::vector<Nota> Service::getAllNote() const {
+const std::vector<Nota>& Service::getAllNote() const {
     return repository.getNote();
 }
 

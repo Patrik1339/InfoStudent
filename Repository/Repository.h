@@ -28,9 +28,9 @@ public:
     std::vector<Student>& getStudenti();
     std::vector<Profesor>& getProfesori();
     void modificaStudent(const std::vector<Student>::iterator& it, const std::string& nume,
-        const std::string& email, const std::string& password, int grupa);
+        const std::string& email, const std::string& password, int grupa) const;
     void modificaProfesor(const std::vector<Profesor>::iterator& it, const std::string& nume,
-        const std::string& email, const std::string& password, const std::string& departament);
-    void modificaMaterie(const std::vector<Materie>::iterator& it, const std::string& denumire, Profesor& profesor);
+        const std::string& email, const std::string& password, const std::string& departament) const;
+    void modificaMaterie(const std::vector<Materie>::iterator& it, const std::string& denumire, Profesor& profesor) const;
     void modificaNota(const std::vector<Nota>::iterator& it, int valoare) const;
 };

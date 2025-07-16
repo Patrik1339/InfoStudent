@@ -11,14 +11,14 @@ public:
     explicit Service(Repository& repository);
     ~Service() = default;
 
-    User* login(const std::string& email, const std::string& password) const;
+    [[nodiscard]] User* login(const std::string& email, const std::string& password) const;
 
     std::vector<Nota> getNote(const User& user) const;
     std::vector<Materie> getMaterii(const User& user) const;
-    std::vector<Student> getAllStudenti() const;
-    std::vector<Profesor> getAllProfesori() const;
-    std::vector<Materie> getAllMaterii() const;
-    std::vector<Nota> getAllNote() const;
+    [[nodiscard]] const std::vector<Student>& getAllStudenti() const;
+    [[nodiscard]] const std::vector<Profesor>& getAllProfesori() const;
+    [[nodiscard]] const std::vector<Materie>& getAllMaterii() const;
+    [[nodiscard]] const std::vector<Nota>& getAllNote() const;
     void modificaStudent(int id, const std::string& nume, const std::string& email, const std::string& password, int grupa) const;
     void modificaProfesor(int id, const std::string& nume, const std::string& email, const std::string& password, const std::string& departament) const;
     void modificaMaterie(int id, const std::string& denumire, int id_profesor) const;

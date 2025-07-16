@@ -33,6 +33,7 @@ void StudentWindow::initializareGUI() {
     this->setLayout(lyMain);
     this->resize(600, 300);
     this->setStyleSheet("background-color: #A2B2C3; color: black;");
+    this->setWindowTitle("Student");
 }
 
 void StudentWindow::conectareSemnale() {
