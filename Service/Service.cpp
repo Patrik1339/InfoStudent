@@ -204,6 +204,46 @@ void Service::adaugaNota(int id, const int valoare, const std::string& nume_stud
     }
 }
 
+void Service::stergeStudent(int id) const {
+    const auto it_s = std::ranges::find_if(repository.getStudenti(), [id](auto& student) {
+        return id == student.getId();
+    });
+    if(it_s == repository.getStudenti().end()) throw RepositoryError("Nu exista studentul!\n");
+    const auto it_u = std::ranges::find_if(repository.getUsers(), [id](auto* user) {
+        return id == user->getId();
+    });
+    if(it_u == repository.getUsers().end()) throw RepositoryError("Nu exista userul!\n");
+    repository.stergeStudent(it_s, it_u);
+}
+
+void Service::stergeProfesor(int id) const {
+    const auto it_p = std::ranges::find_if(repository.getProfesori(), [id](auto& profesor) {
+        return id == profesor.getId();
+    });
+    if(it_p == repository.getProfesori().end()) throw RepositoryError("Nu exista studentul!\n");
+    const auto it_u = std::ranges::find_if(repository.getUsers(), [id](auto* user) {
+        return id == user->getId();
+    });
+    if(it_u == repository.getUsers().end()) throw RepositoryError("Nu exista userul!\n");
+    repository.stergeProfesor(it_p, it_u);
+}
+
+void Service::stergeMaterie(int id) const {
+    const auto it_m = std::ranges::find_if(repository.getMaterii(), [id](auto& materie) {
+        return id == materie.getId();
+    });
+    if(it_m == repository.getMaterii().end()) throw RepositoryError("Materia nu exista!\n");
+    repository.stergeMaterie(it_m);
+}
+
+void Service::stergeNota(int id) const {
+    const auto it_n = std::ranges::find_if(repository.getNote(), [id](auto& nota) {
+        return id == nota.getId();
+    });
+    if(it_n == repository.getNote().end()) throw RepositoryError("Nota nu exista!\n");
+    repository.stergeNota(it_n);
+}
+
 void Service::addObserver(Observer *obs) {
     observeri.push_back(obs);
 }

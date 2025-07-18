@@ -14,3 +14,7 @@ void Student::setAtributes(const std::string& nume, const std::string& email, co
     this->password = password;
     this->grupa = grupa;
 }
+
+bool Student::operator==(const Student& ot) const {
+    return id == ot.id && nume == ot.nume && email == ot.nume && password == ot.password && grupa == ot.grupa;
+}

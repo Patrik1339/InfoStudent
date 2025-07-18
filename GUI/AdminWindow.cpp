@@ -67,8 +67,10 @@ void AdminWindow::initializareGUI() {
 
     btnAdauga = new QPushButton("Adauga");
     btnModifica = new QPushButton("Modifica");
+    btnSterge = new QPushButton("Sterge");
     lyVertical->addWidget(btnAdauga);
     lyVertical->addWidget(btnModifica);
+    lyVertical->addWidget(btnSterge);
 
     lySecundar->addLayout(lyVertical);
     lyMain->addLayout(lySecundar);
@@ -210,6 +212,56 @@ void AdminWindow::conectareSemnale() {
             QMessageBox::warning(this, "Eroare", re.what());
         } catch(const std::out_of_range&) {
             QMessageBox::warning(this, "Eroare", "Tip invalid de entitate.");
+        }
+    });
+
+    connect(btnSterge, &QPushButton::clicked, [this]() {
+        const std::string tip = comboTabela->currentText().toStdString();
+        const QModelIndex idx = tabela->currentIndex();
+        if(!idx.isValid()) {
+            QMessageBox::warning(this, "Eroare", "Trebuie sa alegi un rand din tabel!");
+            return;
+        }
+        const QVariant var = model->data(idx, Qt::UserRole);
+        const int id = var.value<int>();
+        switch(tipuri.at(tip)) {
+            case 0: {
+                    try {
+                        service.stergeStudent(id);
+                        model->setStudenti(service.getAllStudenti());
+                    } catch(const RepositoryError& re) {
+                        QMessageBox::warning(this, "Eroare", re.what());
+                    }
+                    break;
+                }
+            case 1: {
+                try {
+                    service.stergeProfesor(id);
+                    model->setProfesori(service.getAllProfesori());
+                } catch(const RepositoryError& re) {
+                    QMessageBox::warning(this, "Eroare", re.what());
+                }
+                break;
+            }
+            case 2: {
+                try {
+                    service.stergeMaterie(id);
+                    model->setMaterii(service.getAllMaterii());
+                } catch(const RepositoryError& re) {
+                    QMessageBox::warning(this, "Eroare", re.what());
+                }
+                break;
+            }
+            case 3: {
+                try {
+                    service.stergeNota(id);
+                    model->setNote(service.getAllNote());
+                } catch(const RepositoryError& re) {
+                    QMessageBox::warning(this, "Eroare", re.what());
+                }
+                break;
+            }
+            default: break;
         }
     });
 

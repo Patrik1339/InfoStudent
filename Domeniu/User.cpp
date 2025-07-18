@@ -19,3 +19,7 @@ const std::string& User::getEmail() const {
 const std::string& User::getPassword() const {
     return password;
 }
+
+bool User::operator==(const User &ot) const {
+    return id == ot.id && nume == ot.nume && email == ot.email && password == ot.password;
+}

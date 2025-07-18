@@ -275,3 +275,25 @@ void Repository::addNota(const Nota& nota) {
     note.push_back(nota);
     updateDatabase();
 }
+
+void Repository::stergeStudent(const std::vector<Student>::iterator& it_s, const std::vector<User*>::iterator& it_u) {
+    studenti.erase(it_s);
+    users.erase(it_u);
+    updateStudenti();
+}
+
+void Repository::stergeProfesor(const std::vector<Profesor>::iterator& it_p, const std::vector<User*>::iterator &it_u) {
+    profesori.erase(it_p);
+    users.erase(it_u);
+    updateProfesori();
+}
+
+void Repository::stergeMaterie(const std::vector<Materie>::iterator &it_m) {
+    materii.erase(it_m);
+    updateMaterii();
+}
+
+void Repository::stergeNota(const std::vector<Nota>::iterator &it_n) {
+    note.erase(it_n);
+    updateNote();
+}

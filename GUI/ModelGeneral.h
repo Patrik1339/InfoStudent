@@ -6,6 +6,11 @@
 #include "../Domeniu/Nota.h"
 
 
+Q_DECLARE_METATYPE(Student)
+Q_DECLARE_METATYPE(Profesor)
+Q_DECLARE_METATYPE(Materie)
+Q_DECLARE_METATYPE(Nota)
+
 class ModelTabelGeneral final: public QAbstractTableModel {
 private:
     std::string tip;
@@ -16,10 +21,9 @@ private:
     std::unordered_map<std::string, int> tipuri = {{"studenti", 0}, {"profesori", 1}, {"materii", 2}, {"note", 3}};
 
 public:
-    ModelTabelGeneral(const std::string& tip, const std::vector<Student>& studenti,
-        const std::vector<Profesor>& profesori, const std::vector<Materie>& materii,
-        const std::vector<Nota>& note): tip(tip), studenti(studenti), profesori(profesori),
-            materii(materii), note(note) {}
+    ModelTabelGeneral(const std::string& tip, const std::vector<Student>& studenti, const std::vector<Profesor>& profesori,
+        const std::vector<Materie>& materii, const std::vector<Nota>& note): tip(tip), studenti(studenti),
+        profesori(profesori), materii(materii), note(note) {}
 
     int rowCount(const QModelIndex&) const override {
         switch(tipuri.at(tip)) {
@@ -86,52 +90,64 @@ public:
     }
 
     QVariant data(const QModelIndex& index, int role) const override {
-        if(role != Qt::DisplayRole) return {};
-
-        switch(tipuri.at(tip)) {
+        if(role == Qt::DisplayRole) {
+            switch(tipuri.at(tip)) {
             case 0: {
                 const auto& s = studenti[index.row()];
                 switch(index.column()) {
-                    case 0: return QString::number(s.getId());
-                    case 1: return QString::fromStdString(s.getNume());
-                    case 2: return QString::fromStdString(s.getEmail());
-                    case 3: return QString::fromStdString(s.getPassword());
-                    case 4: return s.getGrupa();
-                    default: return QVariant();
+                case 0: return QString::number(s.getId());
+                case 1: return QString::fromStdString(s.getNume());
+                case 2: return QString::fromStdString(s.getEmail());
+                case 3: return QString::fromStdString(s.getPassword());
+                case 4: return s.getGrupa();
+                default: return QVariant();
                 }
             }
             case 1: {
                 const auto& p = profesori[index.row()];
                 switch(index.column()) {
-                    case 0: return QString::number(p.getId());
-                    case 1: return QString::fromStdString(p.getNume());
-                    case 2: return QString::fromStdString(p.getEmail());
-                    case 3: return QString::fromStdString(p.getPassword());
-                    case 4: return QString::fromStdString(p.getDepartament());
-                    default: return QVariant();
+                case 0: return QString::number(p.getId());
+                case 1: return QString::fromStdString(p.getNume());
+                case 2: return QString::fromStdString(p.getEmail());
+                case 3: return QString::fromStdString(p.getPassword());
+                case 4: return QString::fromStdString(p.getDepartament());
+                default: return QVariant();
                 }
             }
             case 2: {
                 const auto& m = materii[index.row()];
                 switch(index.column()) {
-                    case 0: return QString::number(m.getId());
-                    case 1: return QString::fromStdString(m.getDenumire());
-                    case 2: return QString::fromStdString(m.getProfesor().getNume());
-                    default: return QVariant();
+                case 0: return QString::number(m.getId());
+                case 1: return QString::fromStdString(m.getDenumire());
+                case 2: return QString::fromStdString(m.getProfesor().getNume());
+                default: return QVariant();
                 }
             }
             case 3: {
                 const auto& n = note[index.row()];
                 switch(index.column()) {
-                    case 0: return QString::number(n.getId());
-                    case 1: return QString::fromStdString(n.getStudent().getNume());
-                    case 2: return QString::fromStdString(n.getMaterie().getDenumire());
-                    case 3: return QString::number(n.getValoare());
-                    default: return QVariant();
+                case 0: return QString::number(n.getId());
+                case 1: return QString::fromStdString(n.getStudent().getNume());
+                case 2: return QString::fromStdString(n.getMaterie().getDenumire());
+                case 3: return QString::number(n.getValoare());
+                default: return QVariant();
                 }
             }
             default: return QVariant();
+            }
         }
+
+        if(role == Qt::UserRole) {
+            switch(tipuri.at(tip)) {
+                case 0: return QString::number(studenti[index.row()].getId());
+                case 1: return QString::number(profesori[index.row()].getId());
+                case 2: return QString::number(materii[index.row()].getId());
+                case 3: return QString::number(note[index.row()].getId());
+                default: return QVariant();
+            }
+        }
+
+        return QVariant();
     }
 
     void setStudenti(const std::vector<Student>& studenti) {

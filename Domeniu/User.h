@@ -10,6 +10,7 @@ protected:
     std::string password;
 
 public:
+    User() = default;
     User(int id, const std::string& nume, const std::string& email, const std::string& password);
     virtual ~User() = default;
 
@@ -17,4 +18,6 @@ public:
     [[nodiscard]] const std::string& getNume() const;
     [[nodiscard]] const std::string& getEmail() const;
     [[nodiscard]] const std::string& getPassword() const;
+
+    bool operator==(const User& ot) const;
 };
